@@ -10,26 +10,23 @@ WORDLIST_FILENAME = "palavras.txt"
 class secretletters(object):
 
      secretword=  []
-
+     
+  
      def __init__ (self,secretword): 
          self.secretword=secretword
-
-     def issecretwordletter(self,tentativa):
-      letter=tentativa.letter
-      jogador=tentativa.jogador 
-      jogador.lettersGuessed.append(letter)       
-      return self.issecretword(tentativa)
      
-     def issecretword(self,tentativa): 
-      guessed = ''
-      letter=tentativa.letter 
-      lettersGuessed=tentativa.jogador.lettersGuessed
+     def issecretword(self,jogador): 
+      letter=jogador.letter 
+      guessed=''
+      lettersGuessed=jogador.lettersGuessed
       for letter in self.secretword:
        if letter in lettersGuessed:
-         guessed += letter
+         guessed += letter      
        else:
-         guessed += '_ '
+         guessed += '_ ' 
+      
       return guessed
+
      def isWordGuessed(self, jogador):
         lettersGuessed=jogador.lettersGuessed
         for letter in self.secretword:
@@ -39,7 +36,35 @@ class secretletters(object):
             return False
 
         return True
+
+     def quandif(self,secretWord):
+         quantityletters=len(secretWord)   
+         i2=0
+         i=0
+         iquals=[]
+         letter3="w"
+         numberofdifferents=0     
+         Indexwent=[]      
+         for letter in secretWord:
+          i=i+1
+          result =True          
+          for letter2 in secretWord:  
+            i2=i2+1  
+            if letter==letter2 and i2>i:
+               for n in Indexwent : 
+                  if n==i2:
+                     result=False 
+               if result:                  
+                   Indexwent.append(i2) 
+                   numberofdifferent=quantityletters-1    
+                        
+          i2=0      
+         print "number of different:", numberofdifferent           
+         return numberofdifferent                  
              
+            
+          
+               
 
 
        
@@ -47,6 +72,7 @@ class secretletters(object):
 class jogador(object):
     guesses=8
     lettersGuessed =  []
+    letter='y'
      
     def __init__(self):
         pass 
@@ -70,53 +96,59 @@ class jogador(object):
       print 'I am thinking of a word that is', len(secretWord), ' letters long.'
       print '-------------'
       secretlettera= secretletters(secretWord)
+      secretlettera.quandif(secretWord)
+      guessed=' '    
       while secretlettera.isWordGuessed(self) == False and self.guesses >0:
          print 'You have ', self.guesses, 'guesses left.'
-         
-         available = self.getAvailableLetters()
-         for letter in available:
-          if letter in self.lettersGuessed:
-                available = available.replace(letter, '')
-
-         print 'Available letters', available
+         self.lettersavailable()
          letter = raw_input('Please guess a letter: ')
-         tentativaa=tentativa(letter,jogador)
-         if letter in self.lettersGuessed:
-                guessed=secretlettera.issecretword(tentativaa)
-                print 'Oops! You have already guessed that letter: ', guessed
-         else:
-           tentativaa.pontuar(secretlettera)  
+         self.setletter(letter) 
+         result=self.triedletter(guessed)     
+         if result :
+            guessed=self.pontuar(secretlettera)    
       else:
-         tentivaa=tentativa(letter,self)
-         tentivaa.ultima(secretlettera)
+           if secretlettera.isWordGuessed(self) == True:
+             print 'Congratulations, you won!'
+           else:
+             print 'Sorry, you ran out of guesses. The word was ', secretWord, '.'
     def getAvailableLetters(self):
         import string
         # 'abcdefghijklmnopqrstuvwxyz'
         available = string.ascii_lowercase
 
-        return available 
-
-class tentativa:
-      letter='y'
-      jogador2=jogador()
-      def __init__(self,letter,jogador):
-       self.letter=letter
-       self.jogador= jogador
-      def pontuar(self,secretlettera):            
-         if self.letter in secretWord:
-            guessed=secretlettera.issecretwordletter(self)
+        return available
+    def lettersavailable(self):
+         available = self.getAvailableLetters()
+         for letter in available:
+          if letter in self.getletterguessed():
+                available = available.replace(letter, '')
+         print 'Available letters', available 
+    def  triedletter(self,guessed):
+         letter=self.getletter()     
+         if letter in self.getletterguessed():
+               print 'Oops! You have already guessed that letter: ', guessed
+               return False
+         else: 
+            self.lettersGuessed.append(letter) 
+         return True 
+    def pontuar(self,secretlettera):
+         letter=self.letter          
+         guessed=secretlettera.issecretword(self)          
+         if self.getletter() in secretlettera.secretword:
             print 'Good Guess: ', guessed
          else:
-            jogador.guesses -=1
-            guessed=secretlettera.issecretwordletter(self)
+            self.guesses -=1 
             print 'Oops! That letter is not in my word: ',  guessed
          print '------------'
          return guessed
-      def ultima(self,secretlettera):  
-           if secretlettera.isWordGuessed(self.jogador2) == True:
-             print 'Congratulations, you won!'
-           else:
-             print 'Sorry, you ran out of guesses. The word was ', secretWord, '.'
+    def setletter(self,letter):
+           self.letter=letter 
+    def getletter(self):
+           return self.letter
+    def getletterguessed(self):
+            return self.lettersGuessed
+
+      
 jogador1=jogador()
 secretWord = jogador1.loadWords().lower()
 jogador1.jogada(secretWord)
