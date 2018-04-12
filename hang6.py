@@ -114,7 +114,7 @@ class game(object):
            if worda.isWordGuessed(self) == True:
              print 'Congratulations, you won!'
            else:
-             print 'Sorry, you ran out of guesses. The word was ', worda.getsecretword(), '.'
+             print 'Sorry, you ran out of guesses. The word was ', worda.getsecretword, '.'
     def getAvailableLetters(self):
         import string
         # 'abcdefghijklmnopqrstuvwxyz'
