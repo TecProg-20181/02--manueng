@@ -111,7 +111,9 @@ class game(object):
         self.score(worda)
         if(self.guesses==guesses2):
           print "deu tudo certo no score" 
-
+    def  validaiswordguessed(self,worda):
+        if worda.isWordGuessed(self)== True or worda.isWordGuessed(self)== False :
+            return True      
     def testsetletter(self):
         print " e um boleano"
         letter="a"
@@ -185,7 +187,8 @@ class game(object):
       i=worda.quantitydifferent(self)
       self.validaint(i)
       guessed=' '    
-      while worda.isWordGuessed(self) == False and self.guesses >0:
+       
+      while worda.isWordGuessed(self) == False and self.guesses >0 and self.validaiswordguessed(worda):
          print 'You have ', self.guesses, 'guesses left.'
          self.lettersavailable()
          invalid=True;
@@ -195,12 +198,15 @@ class game(object):
          self.setletter(letter)
          self.triedletter(guessed)
          self.score(worda)
-         worda.guessedword(self)
+         while worda.guessedword(self)==" ":
+               worda.guessedword(self)
       else:
-           if worda.isWordGuessed(self) == True:
-             print 'Congratulations, you won!'
-           else:
-             print 'Sorry, you ran out of guesses. The word was ', worda.getsecretword(), '.'
+           if self.validaiswordguessed(worda):   
+
+              if worda.isWordGuessed(self) == True:  
+                 print 'Congratulations, you won!'
+              else:
+                 print 'Sorry, you ran out of guesses. The word was ', worda.getsecretword(), '.'
     def getAvailableLetters(self):
         import string
         # 'abcdefghijklmnopqrstuvwxyz'
